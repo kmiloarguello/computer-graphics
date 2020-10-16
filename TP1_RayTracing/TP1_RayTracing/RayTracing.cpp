@@ -79,8 +79,10 @@ struct Sphere {
         double sc = oc.dot(oc) - radius * radius;
 
         double delta = sb * sb - 4.0 * sa * sc;
-        if (delta < 0.0)
+        if (delta < 0.0) {
             return 0.0; // no solution
+        } 
+            
 
         double deltaSqrt = sqrt(delta);
         double lambda1 = (-sb - deltaSqrt) / (2.0 * sa);
@@ -89,7 +91,7 @@ struct Sphere {
             return lambda1;
         if (lambda2 >= 0.0)
             return lambda2;
-        return 0.0;
+
         return 0.0;
     }
 
@@ -119,7 +121,6 @@ double geometricTerm(Vec n, Vec wi, Vec wo, double roughness)
     return Gi * Go;
 }
 
-
 double cookTorranceBRDF(const Vec& wi, const Vec& n, const Vec& wo, const double metallic, const double roughness, const double kd)
 {
     Vec wh = (wi + wo).normalize();
@@ -129,6 +130,7 @@ double cookTorranceBRDF(const Vec& wi, const Vec& n, const Vec& wo, const double
     double fs = D * F * G / (4 * n.dot(wi) * n.dot(wo));
     return fs + kd;
 }
+
 inline double clamp(double x) { return x < 0 ? 0 : x > 1 ? 1 : x; }
 inline double clamp(double x, double min, double max)
 {
@@ -138,6 +140,7 @@ inline double clamp(double x, double min, double max)
         x = max;
     return x;
 }
+
 Vec refract(const Vec& I, const Vec& N, const float& ior)
 {
     float cosi = clamp(-1,1,I.dot(N));
@@ -158,7 +161,10 @@ Vec refract(const Vec& I, const Vec& N, const float& ior)
 Vec radiance(const Ray& r, int depth) {
     double t;                               // distance to intersection
     int id = 0;                               // id of intersected object
-    if (!intersectScene(r, t, id)) return Vec(); // if miss, return black
+    if (!intersectScene(r, t, id)) {
+        std::cout << "CA" << std::endl;
+        return Vec(); // if miss, return black
+    }
 
     const Sphere& obj = spheres[id];        // the hit object
 
