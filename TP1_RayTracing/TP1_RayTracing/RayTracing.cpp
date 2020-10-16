@@ -67,7 +67,23 @@ struct Sphere {
     Sphere(double rad_, Vec p_, Vec e_, Vec c_, Refl_t refl_) : radius(rad_), p(p_), e(e_), c(c_), refl(refl_) {}
 
     double intersect(const Ray& r) const { // returns distance, 0 if nohit
-        // TODO
+        Vec oc = r.o - p;
+        double sa = 1.0;
+        double sb = 2.0 * oc.dot(r.d);
+        double sc = oc.dot(oc) - radius * radius;
+
+        double delta = sb * sb - 4.0 * sa * sc;
+        if (delta < 0.0)
+            return 0.0; // no solution
+
+        double deltaSqrt = sqrt(delta);
+        double lambda1 = (-sb - deltaSqrt) / (2.0 * sa);
+        double lambda2 = (-sb + deltaSqrt) / (2.0 * sa);
+        if (lambda1 < lambda2 && lambda1 >= 0.0)
+            return lambda1;
+        if (lambda2 >= 0.0)
+            return lambda2;
+        return 0.0;
         return 0.0;
     }
 
